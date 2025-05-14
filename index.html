@@ -2,42 +2,109 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Username Formatter</title>
+  <title>@Username Formatter (50 per line)</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
     }
-    textarea, input, button {
+    textarea {
       width: 100%;
-      margin-top: 10px;
       padding: 10px;
       font-size: 16px;
+      margin-bottom: 20px;
+      resize: vertical;
     }
-    #output {
-      margin-top: 20px;
-      padding: 10px;
-      background: #f0f0f0;
+    .output-line {
+      background-color: #f5f5f5;
       border: 1px solid #ccc;
-      white-space: pre-wrap;
+      padding: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .copy-btn:hover {
+      background-color: #0056b3;
+    }
+    .copied-msg {
+      position: absolute;
+      right: 60px;
+      top: 11px;
+      color: green;
+      font-size: 12px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h2>Username to @Mention Formatter</h2>
-  <textarea id="usernames" rows="8" placeholder="Paste usernames here..."></textarea>
+
+  <h2>@Username Formatter</h2>
+  <p>Paste one username per line:</p>
+  <textarea id="usernames" rows="10" placeholder="Enter usernames..."></textarea>
   <button onclick="formatUsernames()">Format</button>
-  <div id="output" placeholder="Output will appear here..."></div>
+
+  <h3>Output (50 @usernames per line):</h3>
+  <div id="output"></div>
 
   <script>
     function formatUsernames() {
-      const input = document.getElementById('usernames').value;
+      const input = document.getElementById("usernames").value.trim();
       const lines = input.split(/\r?\n/).filter(line => line.trim() !== '');
-      const formatted = lines.map(username => '@' + username.trim()).join(' ');
-      document.getElementById('output').innerText = formatted;
+      const tagged = lines.map(u => '@' + u.trim());
+
+      const chunkSize = 50;
+      const outputDiv = document.getElementById("output");
+      outputDiv.innerHTML = '';
+
+      for (let i = 0; i < tagged.length; i += chunkSize) {
+        const chunk = tagged.slice(i, i + chunkSize).join(' ');
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'output-line';
+        lineDiv.textContent = chunk;
+        lineDiv.onclick = () => copyToClipboard(chunk, lineDiv);
+
+        const copiedMsg = document.createElement('span');
+        copiedMsg.className = 'copied-msg';
+        copiedMsg.textContent = 'Copied!';
+        lineDiv.appendChild(copiedMsg);
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = (e) => {
+          e.stopPropagation();
+          copyToClipboard(chunk, lineDiv);
+        };
+
+        lineDiv.appendChild(copyBtn);
+        outputDiv.appendChild(lineDiv);
+      }
+    }
+
+    function copyToClipboard(text, lineDiv) {
+      navigator.clipboard.writeText(text).then(() => {
+        const msg = lineDiv.querySelector('.copied-msg');
+        msg.style.display = 'inline';
+        setTimeout(() => {
+          msg.style.display = 'none';
+        }, 1000);
+      });
     }
   </script>
+
 </body>
 </html>
