@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Username Formatter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    textarea, input, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Username to @Mention Formatter</h2>
+  <textarea id="usernames" rows="8" placeholder="Paste usernames here..."></textarea>
+  <button onclick="formatUsernames()">Format</button>
+  <div id="output" placeholder="Output will appear here..."></div>
+
+  <script>
+    function formatUsernames() {
+      const input = document.getElementById('usernames').value;
+      const lines = input.split(/\r?\n/).filter(line => line.trim() !== '');
+      const formatted = lines.map(username => '@' + username.trim()).join(' ');
+      document.getElementById('output').innerText = formatted;
+    }
+  </script>
+</body>
+</html>
