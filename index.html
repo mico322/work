@@ -103,13 +103,29 @@
 
   <h2>@Username Formatter</h2>
   <p>Paste one username per line:</p>
-  <textarea id="usernames" rows="10" placeholder="e.g. username123&#10;john_doe&#10;..."></textarea>
+  <textarea id="usernames" rows="10" placeholder="e.g. username123&#10;john_doe&#10;..."></textarea>  <p id="usernameCount">Usernames entered: 0</p>
   <button onclick="formatUsernames()">Format</button>
+
+
+
 
   <h3>Output (50 @usernames per line):</h3>
   <div id="output"></div>
 
- <script>
+
+
+
+
+
+
+
+
+
+ <script>document.getElementById("usernames").addEventListener("input", () => {
+  const lines = document.getElementById("usernames").value.trim().split(/\r?\n/).filter(line => line.trim() !== '');
+  document.getElementById("usernameCount").textContent = `Usernames entered: ${lines.length}`;
+});
+
   function formatUsernames() {
     const input = document.getElementById("usernames").value.trim();
     const lines = input.split(/\r?\n/).filter(line => line.trim() !== '');
